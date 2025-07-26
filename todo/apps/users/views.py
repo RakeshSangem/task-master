@@ -1,9 +1,10 @@
 from rest_framework.response import Response
-from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
-from .serializers import UserRegisterSerializer, UserLoginSerializer
-from .models import User
+from rest_framework import generics, status
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from todo.apps.users.serializers import UserRegisterSerializer, UserLoginSerializer
+from todo.apps.users.models import User
 
 
 def create_token_for_user(user):
@@ -50,6 +51,10 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = UserRegisterSerializer
     queryset = User.objects.all()
     permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        serializer = self.get_serializer()
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
